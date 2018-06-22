@@ -1,7 +1,6 @@
 var Buffer = require('safe-buffer').Buffer
-var createHash = require('create-hash')
-var pbkdf2 = require('pbkdf2').pbkdf2Sync
-var randomBytes = require('randombytes')
+const CryptoJS = require('crypto-js')
+const ethUtil = require('ethereumjs-util')
 
 // use unorm until String.prototype.normalize gets better browser support
 var unorm = require('unorm')
@@ -38,7 +37,7 @@ function bytesToBinary (bytes) {
 function deriveChecksumBits (entropyBuffer) {
   var ENT = entropyBuffer.length * 8
   var CS = ENT / 32
-  var hash = createHash('sha256').update(entropyBuffer).digest()
+  var hash = ethUtil.sha256(entropyBuffer)
 
   return bytesToBinary([].slice.call(hash)).slice(0, CS)
 }
@@ -51,7 +50,12 @@ function mnemonicToSeed (mnemonic, password) {
   var mnemonicBuffer = Buffer.from(unorm.nfkd(mnemonic), 'utf8')
   var saltBuffer = Buffer.from(salt(unorm.nfkd(password)), 'utf8')
 
-  return pbkdf2(mnemonicBuffer, saltBuffer, 2048, 64, 'sha512')
+  var key = CryptoJS.PBKDF2(mnemonicBuffer.toString(), saltBuffer.toString(), {
+    keySize: 64 / 4, // 1 word := 4 bytes
+    hasher: CryptoJS.algo.SHA512,
+    iterations: 2048
+  })
+  return Buffer.from(key.toString(), 'hex')
 }
 
 function mnemonicToSeedHex (mnemonic, password) {
@@ -115,7 +119,6 @@ function entropyToMnemonic (entropy, wordlist) {
 function generateMnemonic (strength, rng, wordlist) {
   strength = strength || 128
   if (strength % 32 !== 0) throw new TypeError(INVALID_ENTROPY)
-  rng = rng || randomBytes
 
   return entropyToMnemonic(rng(strength / 8), wordlist)
 }
