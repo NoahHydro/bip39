@@ -1,7 +1,6 @@
 # BIP39
 
-[![Build Status](https://travis-ci.org/bitcoinjs/bip39.png?branch=master)](https://travis-ci.org/bitcoinjs/bip39)
-[![NPM](https://img.shields.io/npm/v/bip39.svg)](https://www.npmjs.org/package/bip39)
+This fork of the original [bip39](https://github.com/bitcoinjs/bip39) differs from the original in that it removes the dependency on the Node crypto module. This allows it to be used in the highly-optimized [eth-wallet-light](https://github.com/NoahHydro/eth-wallet-light) library. The only breaking change is that [`generateMnemonic`](https://github.com/NoahHydro/bip39/blob/master/index.js#L119) now requires an explicit `rng` function to be passed, rather than defaulting to [`randombytes`](https://github.com/crypto-browserify/randombytes).
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
@@ -19,8 +18,8 @@ However, there should be other checks in place, such as checking to make sure th
 
 ## Examples
 ``` js
-// Generate a random mnemonic (uses crypto.randomBytes under the hood), defaults to 128-bits of entropy
-var mnemonic = bip39.generateMnemonic()
+// Generate a mnemonic, must pass a function that returns random number of bytes, defaults to 128-bits of entropy
+var mnemonic = bip39.generateMnemonic(rng)
 // => 'seed sock milk update focus rotate barely fade car face mechanic mercy'
 
 bip39.mnemonicToSeedHex('basket actual')
