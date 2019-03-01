@@ -1,6 +1,7 @@
 # BIP39
 
-This fork of the original [bip39](https://github.com/bitcoinjs/bip39) differs from the original in that it removes the dependency on the Node crypto module. This allows it to be used in the highly-optimized [eth-wallet-light](https://github.com/NoahHydro/eth-wallet-light) library. The only breaking change is that [`generateMnemonic`](https://github.com/NoahHydro/bip39/blob/master/index.js#L119) now requires an explicit `rng` function to be passed, rather than defaulting to [`randombytes`](https://github.com/crypto-browserify/randombytes).
+This fork of the original [bip39](https://github.com/bitcoinjs/bip39) differs from the original in that it removes the dependency on the Node crypto module. This allows it to be used in the optimized [eth-wallet-light](https://github.com/NoahZinsmeister/eth-wallet-light) library. The only breaking change is that [`generateMnemonic`](https://github.com/NoahZinsmeister/bip39/blob/master/index.js#L119) now requires an explicit `rng` function to be passed, rather than defaulting to [`randombytes`](https://github.com/crypto-browserify/randombytes).
+
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
